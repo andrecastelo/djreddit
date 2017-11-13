@@ -1,35 +1,35 @@
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.views import View
 
 from core.forms import LoginForm
 
-def login_view(request):
-    if request.method == 'POST':
-        return do_login(request)
-    else:
-        return render(request, 'login.html', {'form': LoginForm()})
+class LoginView(View):
+    template_name = 'login.html'
+    form_class = LoginForm
 
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form_class()})
 
-def do_login(request):
-    form = LoginForm(request.POST)
+    def post(self, request):
+        form = self.form_class(request.POST)
 
-    if form.is_valid():
-        username = form.cleaned_data['username']
-        password = form.cleaned_data['password']
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
 
-        user = authenticate(request, username=username, password=password)
+            user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            return login_and_redirect(request, user)
+            if user is not None:
+                return self.login_and_redirect(request, user)
 
-    messages.error(request, "The username and password were incorrect.")
-    return HttpResponseRedirect(reverse('login'))
+        messages.error(request, "The username and password were incorrect.")
+        return HttpResponseRedirect(reverse_lazy('login'))
 
-
-def login_and_redirect(request, user):
-    login(request, user)
-    messages.success(request, 'You are now logged in.')
-    return HttpResponseRedirect('/')
+    def login_and_redirect(request, user):
+        login(request, user)
+        messages.success(request, 'You are now logged in.')
+        return HttpResponseRedirect('/')

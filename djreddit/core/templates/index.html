@@ -8,7 +8,7 @@
                 <div class="box">
                     <p>
                         <p class="title is-size-6 is-marginless">
-                            <a href="#">{{ post.title }}</a>
+                            <a href="{% url 'posts.show' post.id %}">{{ post.title }}</a>
                         </p>
                         <small class='has-text-grey'>
                             submitted {{ post.created_at | naturaltime }} by <a href="#">{{ post.user.username }}</a>
