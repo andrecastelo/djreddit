@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <div class="box">
+                <h1 class="title is-size-4">
+                    {{ post.title }}
+                </h1>
+                <p class="subtitle is-size-6 has-text-grey">
+                    submitted {{ post.created_at | naturaltime }} by <a href="#">{{ post.user.username }}</a>
+                </p>
+
+                <p>
+                    {{ post.body }}
+                </p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
